@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../db/connection");
 const db = require("../db/connection");
 
-const job = db.define("job", {
+const Job = db.define("job", {
   title: {
     type: Sequelize.STRING,
   },
