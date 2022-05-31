@@ -3,9 +3,12 @@ const res = require("express/lib/response");
 const router = express.Router();
 const Job = require("../models/Job");
 
-
-router.get('/add', (req, res) => {
-    res.send('deu certo!')
+// rota de teste
+router.get('/test', (req, res) => {
+  res.send('deu certo');
+}); 
+router.get('/add', (req,res) => {
+  res.render('add');
 })
 
 //add job via post
