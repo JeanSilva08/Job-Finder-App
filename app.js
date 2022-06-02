@@ -5,6 +5,9 @@ const path = require("path");
 const db = require("./db/connection");
 const bodyParser = require("body-parser");
 const Job        = require('./models/Job');
+const Sequelize  = require('sequelize');
+const Op         = Sequelize.Op;
+
 
 const PORT = 3000;
 
@@ -32,18 +35,44 @@ db.authenticate()
     console.log("Ocorreu um erro ao conectar com o banco de dados", err);
   });
 
-//routes
-app.get("/", (req, res) => {
-  Job.findAll({order: [
-    ['createdAt', 'DESC']
-  ]})
-  .then(jobs => {
-    res.render('index', {
-      jobs
-    });
-  })
-  .catch(err => console.log(err));  //.catch adicionado!
+// routes
+app.get('/', (req, res) => {
+
+  let search = req.query.job;
+  let query  = '%'+search+'%'; // PH -> PHP, Word -> Wordpress, press -> Wordpress
+
+  if(!search) {
+    Job.findAll({order: [
+      ['createdAt', 'DESC']
+    ]})
+    .then(jobs => {
+  
+      res.render('index', {
+        jobs
+      });
+  
+    })
+    .catch(err => console.log(err));
+  } else {
+    Job.findAll({
+      where: {title: {[Op.like]: query}},
+      order: [
+        ['createdAt', 'DESC']
+    ]})
+    .then(jobs => {
+      console.log(search);
+      console.log(search);
+  
+      res.render('index', {
+        jobs, search
+      });
+  
+    })
+    .catch(err => console.log(err));
+  }
+
+  
 });
 
-//jobs routes
-app.use("/jobs", require("./routes/jobs"));
+// jobs routes
+app.use('/jobs', require('./routes/jobs'));
